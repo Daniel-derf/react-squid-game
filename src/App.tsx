@@ -22,20 +22,29 @@ function GreenLightRedLight() {
   const squareStyle = isButtonGreen ? greenSquareStyle : redSquareStyle;
 
   function finishGame(result: any) {
+    console.log("finish 1");
     result === "win" ? setIsGameWon(true) : setIsGameOver(true);
 
     setIsGameStarted(false);
     setClicks(0);
 
+    console.log("finish 2");
+
     clearTimeout(timer2.current);
     timer2.current = null;
 
+    console.log("finish 3");
+
     clearTimer();
+
+    console.log("finish 4");
   }
 
   function clearTimer() {
     clearInterval(timer.current);
     timer.current = null;
+
+    console.log("limpou o timer");
   }
 
   function startGame() {
@@ -53,9 +62,12 @@ function GreenLightRedLight() {
 
     timer.current = setInterval(() => {
       setTimeLeft((timeLeft) => {
+        console.log("rodou");
+
         if (timeLeft - 1 === 0) {
           finishGame("lost");
-          clearTimer();
+
+          return 15;
         }
 
         return timeLeft - 1;
@@ -76,7 +88,6 @@ function GreenLightRedLight() {
         timer2.current = null;
 
         changeSquareColor();
-        console.log("chamada recursiva");
 
         return;
       }
@@ -85,8 +96,7 @@ function GreenLightRedLight() {
 
   function computeClick() {
     if (!isButtonGreen) {
-      setIsGameOver(true);
-      setIsGameStarted(false);
+      finishGame("lost");
       return;
     }
 
@@ -95,8 +105,6 @@ function GreenLightRedLight() {
         finishGame("win");
 
         setScore(score + 1);
-
-        clearTimer();
 
         return;
       }
