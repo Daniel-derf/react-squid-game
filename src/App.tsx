@@ -17,25 +17,20 @@ function GreenLightRedLight() {
   const [timeLeft, setTimeLeft] = useState(15);
 
   const timer: any = useRef(null);
+  const timer2: any = useRef(null);
 
   const squareStyle = isButtonGreen ? greenSquareStyle : redSquareStyle;
 
   function finishGame(result: any) {
     result === "win" ? setIsGameWon(true) : setIsGameOver(true);
+
     setIsGameStarted(false);
     setClicks(0);
-  }
 
-  function changeSquareColor() {
-    const randomTime = Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000;
+    clearTimeout(timer2.current);
+    timer2.current = null;
 
-    setTimeout(() => {
-      setIsButtonGreen((prevIsButtonGreen) => !prevIsButtonGreen);
-
-      if (timeLeft > 0 && isGameStarted) {
-        changeSquareColor();
-      }
-    }, randomTime);
+    clearTimer();
   }
 
   function clearTimer() {
@@ -67,7 +62,25 @@ function GreenLightRedLight() {
       });
     }, 1000);
 
-    // changeSquareColor();
+    changeSquareColor();
+  }
+
+  function changeSquareColor() {
+    const randomTime = Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000;
+
+    timer2.current = setTimeout(() => {
+      setIsButtonGreen((prevIsButtonGreen) => !prevIsButtonGreen);
+
+      if (timeLeft > 0) {
+        clearTimeout(timer2.current);
+        timer2.current = null;
+
+        changeSquareColor();
+        console.log("chamada recursiva");
+
+        return;
+      }
+    }, randomTime);
   }
 
   function computeClick() {
@@ -77,11 +90,11 @@ function GreenLightRedLight() {
       return;
     }
 
-    setClicks((prevClicks) => {
+    setClicks((prevClicks: any) => {
       if (prevClicks + 1 >= 15) {
         finishGame("win");
 
-        setScore((prevScore) => prevScore + 1);
+        setScore(score + 1);
 
         clearTimer();
 
